@@ -6,6 +6,7 @@ import {
   CourseCard, LessonItem, Navbar, SearchBar, Sidebar,
   Input, Switch, Checkbox, Tabs, TabsList, TabsTrigger, TabsContent,
   Alert, Tooltip, Avatar, Progress, Skeleton, Separator,
+  Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose,
   Spotlight, GradientBorderCard, ShimmerButton, AnimatedGridPattern, BentoGrid, BentoCard,
   FloatingCard, MagneticButton, Ripple, GlitchText, TiltCard, Motion,
   ProductSearchBar, FilterSidebar, OrderButton, RadioGroup, RadioGroupItem,
