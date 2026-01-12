@@ -1,0 +1,17 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@bugzx-motion/core": [
+                "../core/src"
+            ],
+            "@bugzx-motion/ui": [
+                "../ui/src"
+            ]
+        }
+    },
+    "include": [
+        "src"
+    ]
+}

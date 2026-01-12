@@ -1,0 +1,37 @@
+{
+    "name": "@bugzx-motion/next",
+    "version": "0.0.1",
+    "main": "dist/index.js",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "exports": {
+        ".": {
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "scripts": {
+        "build": "tsup",
+        "dev": "tsup --watch"
+    },
+    "dependencies": {
+        "@bugzx-motion/core": "workspace:*",
+        "@bugzx-motion/ui": "workspace:*"
+    },
+    "peerDependencies": {
+        "next": "^13.0.0 || ^14.0.0 || ^15.0.0",
+        "react": "^18.0.0 || ^19.0.0",
+        "react-dom": "^18.0.0 || ^19.0.0"
+    },
+    "devDependencies": {
+        "next": "^14.0.0",
+        "tsup": "^8.0.0",
+        "typescript": "^5.0.0",
+        "@types/react": "^18.0.0",
+        "@types/react-dom": "^18.0.0"
+    }
+}
