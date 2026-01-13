@@ -78,6 +78,7 @@ export default function DocsPage() {
   // Blueprint States
   const [blueprintNeon, setBlueprintNeon] = useState(true);
   const [blueprintIndex, setBlueprintIndex] = useState(1);
+  const [blueprintAccent, setBlueprintAccent] = useState("#cf0");
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -1174,55 +1175,34 @@ export default function DocsPage() {
             <div className="space-y-4">
               <h2 className="text-3xl font-bold tracking-tight">Blueprint Grid (Portfolio UI)</h2>
               <p className="text-zinc-400 max-w-3xl">
-                A specialized design system inspired by architectural blueprints. Features high-contrast borders, 50px grid alignment, and neon accents. Perfect for developer portfolios and technical dashboards.
+                A specialized design system inspired by architectural blueprints. Features high-contrast borders, 50px grid alignment, and customizable accent colors. Perfect for developer portfolios and technical dashboards.
               </p>
             </div>
 
             <ComponentPlayground
               title="Blueprint Components"
-              description="Interactive preview of the blueprint layout system."
-              code={`<BlueprintGrid className="h-[600px] rounded-2xl border border-zinc-800">
-  <div className="p-12 grid grid-cols-1 md:grid-cols-2 gap-8">
-    <BlueprintCard 
-      title="Architecture" 
-      index={1} 
-      neon={${blueprintNeon}}
-    >
-      Designing scalable systems with precision and detail.
-    </BlueprintCard>
-    
-    <BlueprintCard 
-      title="Development" 
-      index={2} 
-      neon={${blueprintNeon}}
-    >
-      Building high-performance interfaces with modern stacks.
-    </BlueprintCard>
-
-    <div className="md:col-span-2 flex justify-center gap-4 pt-8">
-      <BlueprintButton variant="default">Documentation</BlueprintButton>
-      <BlueprintButton variant="neon">Get Started</BlueprintButton>
-      <BlueprintButton variant="outline">Learn More</BlueprintButton>
-    </div>
-  </div>
-</BlueprintGrid>`}
+              description="Interactive preview of the blueprint layout system with custom accents."
+              code={`<BlueprintCard \n  title="Architecture" \n  accentColor="${blueprintAccent}" \n  neon={${blueprintNeon}} \n/>`}
               controls={[
                 { name: "Neon Mode", type: "boolean", value: blueprintNeon },
-                { name: "Card Index", type: "number", value: blueprintIndex, min: 1, max: 99 }
+                { name: "Card Index", type: "number", value: blueprintIndex, min: 1, max: 99 },
+                { name: "Accent Color", type: "color", value: blueprintAccent }
               ]}
               onControlChange={(name, val) => {
                 if (name === "Neon Mode") setBlueprintNeon(val);
                 if (name === "Card Index") setBlueprintIndex(val);
+                if (name === "Accent Color") setBlueprintAccent(val);
               }}
               neonMode={neonMode}
             >
               <div className="w-full">
-                <BlueprintGrid className="h-[500px] rounded-2xl border border-zinc-800 w-full">
+                <BlueprintGrid accentColor={blueprintAccent} className="h-[500px] rounded-2xl border border-zinc-800 w-full">
                   <div className="p-10 grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
                     <BlueprintCard
                       title="Architecture"
                       index={blueprintIndex}
                       neon={blueprintNeon}
+                      accentColor={blueprintAccent}
                       className="w-full"
                     >
                       Designing scalable systems with precision and detail.
@@ -1232,15 +1212,16 @@ export default function DocsPage() {
                       title="Development"
                       index={blueprintIndex + 1}
                       neon={blueprintNeon}
+                      accentColor={blueprintAccent}
                       className="w-full"
                     >
                       Building high-performance interfaces with modern stacks.
                     </BlueprintCard>
 
                     <div className="md:col-span-2 flex flex-wrap justify-center gap-4 pt-6">
-                      <BlueprintButton variant="default">Documentation</BlueprintButton>
-                      <BlueprintButton variant="neon">Get Started</BlueprintButton>
-                      <BlueprintButton variant="outline">Learn More</BlueprintButton>
+                      <BlueprintButton variant="default" accentColor={blueprintAccent}>Documentation</BlueprintButton>
+                      <BlueprintButton variant="neon" accentColor={blueprintAccent}>Get Started</BlueprintButton>
+                      <BlueprintButton variant="outline" accentColor={blueprintAccent}>Learn More</BlueprintButton>
                     </div>
                   </div>
                 </BlueprintGrid>
@@ -1249,12 +1230,12 @@ export default function DocsPage() {
 
             <ComponentPlayground
               title="Tactical Marquee"
-              description="Infinite technical scanline for active data or tech stacks."
+              description="Infinite technical scanline with customizable accent lights."
               neonMode={neonMode}
-              code={`<BlueprintMarquee \n  items={["React", "TypeScript", "Framer Motion", "Tailwind"]} \n  speed="normal" \n/>`}
+              code={`<BlueprintMarquee \n  items={["SYSTEM_READY", "DATA_SYNCED"]} \n  accentColor="${blueprintAccent}" \n/>`}
             >
               <div className="w-full">
-                <BlueprintMarquee items={["PHYSICS_ENGINE", "MOTION_PRIMITIVES", "VIRTUAL_DOM", "GPU_ACCELERATION", "SPRING_MECHANICS"]} />
+                <BlueprintMarquee accentColor={blueprintAccent} items={["PHYSICS_ENGINE", "MOTION_PRIMITIVES", "VIRTUAL_DOM", "GPU_ACCELERATION", "SPRING_MECHANICS"]} />
               </div>
             </ComponentPlayground>
 
@@ -1262,7 +1243,7 @@ export default function DocsPage() {
               title="Project Showcase"
               description="Technical display for project logs with architectural tags."
               neonMode={neonMode}
-              code={`<BlueprintProjectCard \n  title="Motion Engine" \n  description="Advanced physics simulation for web." \n  tags={["Core", "GL"]} \n  neon={true} \n/>`}
+              code={`<BlueprintProjectCard \n  title="Aether Interface" \n  accentColor="${blueprintAccent}" \n/>`}
             >
               <div className="w-full max-w-sm">
                 <BlueprintProjectCard
@@ -1270,6 +1251,7 @@ export default function DocsPage() {
                   description="A high-performance dashboard conceptualized for architectural visualization and real-time data monitoring. Features GPU-accelerated pathfinding."
                   tags={["Rust", "WASM", "WebGL"]}
                   neon={blueprintNeon}
+                  accentColor={blueprintAccent}
                 />
               </div>
             </ComponentPlayground>
@@ -1278,10 +1260,10 @@ export default function DocsPage() {
               title="Initialization Protocol"
               description="Technical contact module with verified signal transmission."
               neonMode={neonMode}
-              code={`<BlueprintContact title="Contact Protocol" />`}
+              code={`<BlueprintContact \n  title="Contact Protocol" \n  accentColor="${blueprintAccent}" \n  className="rounded-3xl shadow-2xl" \n/>`}
             >
               <div className="w-full">
-                <BlueprintContact />
+                <BlueprintContact accentColor={blueprintAccent} className="rounded-3xl" />
               </div>
             </ComponentPlayground>
 
@@ -1289,10 +1271,11 @@ export default function DocsPage() {
               title="System Footer"
               description="Architectural footer with technical data and system status."
               neonMode={neonMode}
-              code={`<BlueprintFooter copyright="BugzxMotion" links={[{label: "Home", href: "/"}]} />`}
+              code={`<BlueprintFooter \n  accentColor="${blueprintAccent}" \n  copyright="BugzxMotion" \n/>`}
             >
               <div className="w-full">
                 <BlueprintFooter
+                  accentColor={blueprintAccent}
                   links={[
                     { label: "Documentation", href: "#" },
                     { label: "Components", href: "#" },

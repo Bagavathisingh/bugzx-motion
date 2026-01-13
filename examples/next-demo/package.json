@@ -12,7 +12,7 @@
     "next": "16.1.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "@bugzx-motion/next": "^0.0.6"
+    "@bugzx-motion/next": "^0.0.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
