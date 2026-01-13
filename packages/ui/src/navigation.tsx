@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from "react"
-import { Motion } from "@bugzx-motion/core"
+import { Motion, splitMotionProps } from "@bugzx-motion/core"
 import { cn } from "./utils"
 import { Button } from "./button"
 import { Input } from "./input"
@@ -45,14 +45,22 @@ export const Navbar = React.forwardRef<HTMLDivElement, NavbarProps>(
                 <div className="container mx-auto flex h-16 items-center justify-between px-4">
                     <div className="flex items-center gap-8">
                         {logo}
-                        <nav className="hidden md:flex gap-6">
+                        <nav className="hidden md:flex gap-1">
                             {items.map((item, i) => (
                                 <a
                                     key={i}
                                     href={item.href}
-                                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                                    className="relative px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group"
                                 >
-                                    {item.label}
+                                    <span className="relative z-10">{item.label}</span>
+                                    <Motion.div
+                                        className={cn(
+                                            "absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 bg-muted/50 -z-0",
+                                            variant === "neon" && "bg-cyan-500/10"
+                                        )}
+                                        layoutId="navbar-hover"
+                                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                    />
                                 </a>
                             ))}
                         </nav>
@@ -83,31 +91,29 @@ export const SearchBar = React.forwardRef<HTMLInputElement, SearchBarProps>(
         };
 
         return (
-            <div className="relative group w-full max-w-md">
+            <div className={cn("relative group w-full", className)}>
                 <Input
                     ref={ref}
                     className={cn(
-                        "pl-10 pr-4 transition-all focus:w-full",
-                        variants[variant],
+                        "pl-10 pr-12 h-11 transition-all duration-300",
+                        variant === "neon" && "bg-black border-cyan-500/50 text-cyan-400 placeholder:text-cyan-900 shadow-[0_0_15px_rgba(6,182,212,0.1)] focus:border-cyan-400 focus:ring-cyan-500/20",
+                        variant === "minimal" && "bg-secondary/20 border-transparent hover:bg-secondary/40",
                         className
                     )}
                     placeholder="Search..."
                     onChange={(e) => onSearch?.(e.target.value)}
                     {...props}
                 />
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-foreground transition-colors">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-foreground transition-colors pointer-events-none">
                     <svg className={cn("h-4 w-4", variant === "neon" && "text-cyan-500")} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
                 {variant !== "minimal" && (
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden md:block">
-                        <span className={cn(
-                            "text-xs border px-1.5 py-0.5 rounded",
-                            variant === "neon" ? "border-cyan-800 text-cyan-600" : "border-border text-muted-foreground"
-                        )}>
-                            ⌘K
-                        </span>
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
+                        <kbd className="hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 group-hover:bg-accent group-hover:text-accent-foreground transition-colors">
+                            <span className="text-xs">⌘</span>K
+                        </kbd>
                     </div>
                 )}
             </div>
@@ -119,61 +125,156 @@ SearchBar.displayName = "SearchBar";
 // ============================================
 // SIDEBAR
 // ============================================
-interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
-    items: { icon: React.ReactNode; label: string; href: string; active?: boolean }[];
-    footer?: React.ReactNode;
-    collapsed?: boolean;
-    variant?: "default" | "neon";
-    accentColor?: string;
+export interface SidebarItem {
+    icon: React.ReactNode;
+    label: string;
+    href?: string;
+    active?: boolean;
+    onClick?: (e: React.MouseEvent) => void;
 }
 
+interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
+    items: SidebarItem[];
+    logo?: React.ReactNode;
+    footer?: React.ReactNode;
+    collapsed?: boolean;
+    onToggle?: () => void;
+    variant?: "default" | "neon";
+    accentColor?: string;
+    layoutId?: string;
+}
+
+
+
 export const Sidebar = React.forwardRef<HTMLDivElement, SidebarProps>(
-    ({ className, items, footer, collapsed = false, variant = "default", accentColor, ...props }, ref) => {
+    ({ className, items, logo, footer, collapsed = false, onToggle, variant = "default", accentColor, layoutId = "sidebar-active", ...props }, ref) => {
+        const { otherProps } = splitMotionProps(props);
         return (
             <Motion.aside
                 ref={ref}
                 className={cn(
-                    "flex flex-col border-r border-border bg-card h-screen sticky top-0 transition-all duration-300",
-                    collapsed ? "w-16" : "w-64",
+                    "flex flex-col border-r border-border bg-card/50 backdrop-blur-xl h-screen sticky top-0 transition-all duration-100 z-40 ease-out",
+                    collapsed ? "w-20" : "w-72",
                     className
                 )}
-                {...props}
+                {...otherProps}
             >
-                <div className="flex-1 py-6 px-3 space-y-2">
-                    {items.map((item, i) => (
-                        <a
-                            key={i}
-                            href={item.href}
+                <div className={cn(
+                    "flex items-center p-6 pb-0 relative z-10",
+                    collapsed ? "justify-center" : "justify-between"
+                )}>
+                    {logo && !collapsed && (
+                        <Motion.div
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="flex-1"
+                        >
+                            {logo}
+                        </Motion.div>
+                    )}
+
+                    {onToggle && (
+                        <button
+                            type="button"
+                            onClick={onToggle}
                             className={cn(
-                                "flex items-center gap-3 px-3 py-2 rounded-lg transition-all group relative",
-                                item.active
-                                    ? (variant === "neon" ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-[0_0_15px_rgba(6,182,212,0.1)]" : "bg-primary/10 text-primary")
-                                    : (variant === "neon" ? "text-muted-foreground hover:bg-zinc-800 hover:text-cyan-400" : "text-muted-foreground hover:bg-accent hover:text-foreground")
+                                "p-2 rounded-xl transition-all hover:bg-muted/50 text-muted-foreground hover:text-foreground",
+                                variant === "neon" && "hover:bg-cyan-500/10 hover:text-cyan-400"
                             )}
                         >
-                            <span className="shrink-0">{item.icon}</span>
-                            {!collapsed && (
-                                <Motion.span
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    className="font-medium whitespace-nowrap"
+                            <Motion.div
+                                animate={{ rotate: collapsed ? 180 : 0 }}
+                                transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                            >
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                                </svg>
+                            </Motion.div>
+                        </button>
+                    )}
+                </div>
+                <div className="flex-1 py-10 px-4 space-y-2 relative">
+                    {items.map((item, i) => {
+                        const active = !!item.active;
+                        const content = (
+                            <>
+                                {active && (
+                                    <Motion.div
+                                        layoutId={layoutId}
+                                        className={cn(
+                                            "absolute inset-0 z-0 rounded-xl",
+                                            variant === "neon"
+                                                ? "bg-cyan-500/10 border border-cyan-500/20 shadow-[0_0_20px_rgba(6,182,212,0.1)]"
+                                                : "bg-primary/10 border border-primary/20"
+                                        )}
+                                        style={accentColor && !variant.includes("neon") ? { backgroundColor: `${accentColor}1a`, borderColor: `${accentColor}33` } : {}}
+                                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                    />
+                                )}
+                                <span className={cn(
+                                    "shrink-0 relative z-10 transition-transform duration-300 group-hover:scale-110",
+                                    active && variant === "neon" && "text-cyan-400 drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]"
+                                )}>
+                                    {item.icon}
+                                </span>
+                                {!collapsed && (
+                                    <Motion.span
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        className="relative z-10 font-medium whitespace-nowrap"
+                                    >
+                                        {item.label}
+                                    </Motion.span>
+                                )}
+                                {collapsed && (
+                                    <div className="absolute left-full ml-6 px-3 py-2 bg-popover text-popover-foreground text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap border shadow-xl z-50">
+                                        {item.label}
+                                    </div>
+                                )}
+                            </>
+                        );
+
+                        const commonClassName = cn(
+                            "flex items-center gap-4 px-4 py-3 rounded-xl transition-all group relative overflow-hidden w-full text-left outline-none",
+                            active
+                                ? (variant === "neon" ? "text-cyan-400" : "text-primary font-semibold")
+                                : "text-muted-foreground hover:text-foreground"
+                        );
+
+                        if (item.href) {
+                            return (
+                                <a
+                                    key={i}
+                                    href={item.href}
+                                    onClick={item.onClick}
+                                    className={commonClassName}
                                 >
-                                    {item.label}
-                                </Motion.span>
-                            )}
-                            {collapsed && (
-                                <div className="absolute left-full ml-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 border shadow-sm">
-                                    {item.label}
-                                </div>
-                            )}
-                        </a>
-                    ))}
+                                    {content}
+                                </a>
+                            );
+                        }
+
+                        return (
+                            <button
+                                key={i}
+                                type="button"
+                                onClick={item.onClick}
+                                className={commonClassName}
+                            >
+                                {content}
+                            </button>
+                        );
+                    })}
                 </div>
                 {footer && (
-                    <div className="p-4 border-t border-border">
+                    <div className="p-6 border-t border-border/50">
                         {!collapsed ? footer : (
                             <div className="flex justify-center">
-                                <span className="h-8 w-8 rounded-full bg-muted" />
+                                <span className="h-10 w-10 rounded-full border border-border flex items-center justify-center bg-muted/30">
+                                    <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                                </span>
                             </div>
                         )}
                     </div>

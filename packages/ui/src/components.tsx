@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from "react"
-import { Motion } from "@bugzx-motion/core"
+import { Motion, AnimatePresence } from "@bugzx-motion/core"
 import { cn } from "./utils"
 
 // ============================================
@@ -32,8 +32,10 @@ export const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
             whileHover: { scale: 1.05 },
         } : {};
 
+        const isCustomizable = variant === "default" || variant === "outline" || variant === "neon";
+
         const customStyle = {
-            ...(accentColor ? {
+            ...(accentColor && isCustomizable ? {
                 backgroundColor: variant === "outline" ? "transparent" : accentColor,
                 borderColor: accentColor,
                 color: variant === "outline" ? accentColor : undefined,
@@ -147,7 +149,7 @@ export const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
                 <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
                     <Motion.div
                         className={cn("h-full transition-all", variants[variant])}
-                        style={accentColor ? {
+                        style={accentColor && (variant === "default" || variant === "neon") ? {
                             backgroundColor: accentColor,
                             backgroundImage: variant === "neon" ? `linear-gradient(to right, ${accentColor}, ${accentColor}dd)` : undefined,
                             boxShadow: variant === "neon" ? `0 0 10px ${accentColor}80` : undefined
@@ -191,12 +193,24 @@ export const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps & { accen
             <div
                 ref={ref}
                 className={cn(
-                    "animate-pulse bg-muted",
+                    "relative overflow-hidden bg-muted",
+                    variant === "neon" ? "bg-cyan-950/20" : "bg-zinc-200 dark:bg-zinc-800",
                     variants[variant],
                     className
                 )}
                 {...props}
-            />
+            >
+                <Motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent dark:via-white/5"
+                    initial={{ x: "-100%" }}
+                    animate={{ x: "100%" }}
+                    transition={{
+                        repeat: Infinity,
+                        duration: 1.5,
+                        ease: "linear"
+                    }}
+                />
+            </div>
         );
     }
 );
@@ -269,19 +283,31 @@ export const Tooltip = ({ children, content, side = "top", variant = "default" }
             onMouseLeave={() => setIsVisible(false)}
         >
             {children}
-            {isVisible && (
-                <Motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className={cn(
-                        "absolute z-50 px-3 py-1.5 text-sm rounded-md whitespace-nowrap shadow-md",
-                        positions[side],
-                        variants[variant]
-                    )}
-                >
-                    {content}
-                </Motion.div>
-            )}
+            <AnimatePresence>
+                {isVisible && (
+                    <Motion.div
+                        initial={{ opacity: 0, scale: 0.8, y: side === "top" ? 10 : side === "bottom" ? -10 : 0, x: side === "left" ? 10 : side === "right" ? -10 : 0 }}
+                        animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ type: "spring", damping: 15, stiffness: 300 }}
+                        className={cn(
+                            "absolute z-50 px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap shadow-xl border backdrop-blur-md",
+                            positions[side],
+                            variants[variant]
+                        )}
+                    >
+                        {content}
+                        <div className={cn(
+                            "absolute w-2 h-2 rotate-45 border-r border-b",
+                            side === "top" && "bottom-[-5px] left-1/2 -translate-x-1/2",
+                            side === "bottom" && "top-[-5px] left-1/2 -translate-x-1/2 border-l border-t border-r-0 border-b-0",
+                            side === "left" && "right-[-5px] top-1/2 -translate-y-1/2 border-l-0 border-t",
+                            side === "right" && "left-[-5px] top-1/2 -translate-y-1/2 border-l border-b-0 border-t-0",
+                            variant === "neon" ? "bg-black border-cyan-500/50" : "bg-popover border-border"
+                        )} />
+                    </Motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
@@ -302,36 +328,47 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
     ({ className, variant = "default", title, icon, children, accentColor, textColor, ...props }, ref) => {
         const variants = {
             default: "bg-background text-foreground border-border",
-            destructive: "border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive",
-            success: "border-green-500/50 text-green-700 dark:text-green-400 [&>svg]:text-green-600",
-            warning: "border-yellow-500/50 text-yellow-700 dark:text-yellow-400 [&>svg]:text-yellow-600",
-            neon: "bg-black/50 border-cyan-500/50 text-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.2)]",
+            destructive: "border-destructive/50 bg-destructive/5 text-destructive [&>svg]:text-destructive",
+            success: "border-green-500/50 bg-green-500/5 text-green-700 dark:text-green-400 [&>svg]:text-green-600",
+            warning: "border-yellow-500/50 bg-yellow-500/5 text-yellow-700 dark:text-yellow-400 [&>svg]:text-yellow-600",
+            neon: "bg-black/50 border-cyan-500/50 text-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.15)]",
         };
 
         const customStyle = {
-            ...(accentColor ? { borderColor: accentColor } : {}),
+            ...(accentColor && (variant === "default" || variant === "neon") ? { borderColor: accentColor } : {}),
             ...(textColor ? { color: textColor } : {})
         };
+
+        const [dismissed, setDismissed] = React.useState(false);
+
+        if (dismissed) return null;
 
         return (
             <Motion.div
                 ref={ref}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
                 className={cn(
-                    "relative w-full rounded-lg border p-4",
+                    "relative w-full rounded-xl border p-4 backdrop-blur-sm group",
                     variants[variant],
                     className
                 )}
                 style={customStyle}
                 {...props}
             >
-                <div className="flex gap-3">
-                    {icon && <div className="shrink-0">{icon}</div>}
+                <div className="flex gap-4">
+                    {icon && <div className="shrink-0 mt-0.5">{icon}</div>}
                     <div className="flex-1">
-                        {title && <h5 className="mb-1 font-medium leading-none tracking-tight">{title}</h5>}
-                        <div className="text-sm [&_p]:leading-relaxed">{children}</div>
+                        {title && <h5 className="mb-1 font-bold leading-none tracking-tight">{title}</h5>}
+                        <div className="text-sm opacity-90 [&_p]:leading-relaxed">{children}</div>
                     </div>
+                    <button
+                        onClick={() => setDismissed(true)}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-black/5 rounded-md"
+                    >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                    </button>
                 </div>
             </Motion.div>
         );

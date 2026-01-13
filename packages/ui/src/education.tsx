@@ -152,3 +152,200 @@ export const LessonItem = React.forwardRef<HTMLDivElement, LessonItemProps>(
     }
 );
 LessonItem.displayName = "LessonItem";
+
+// ============================================
+// CERTIFICATE CARD
+// ============================================
+interface CertificateCardProps extends React.HTMLAttributes<HTMLDivElement> {
+    title: string;
+    studentName: string;
+    issueDate: string;
+    courseName: string;
+    id: string;
+    variant?: "default" | "neon";
+}
+
+export const CertificateCard = React.forwardRef<HTMLDivElement, CertificateCardProps>(
+    ({ className, title, studentName, issueDate, courseName, id, variant = "default", ...props }, ref) => {
+        return (
+            <Motion.div
+                ref={ref}
+                className={cn(
+                    "relative overflow-hidden p-8 rounded-2xl border bg-card text-card-foreground shadow-xl",
+                    variant === "neon" ? "border-cyan-500/40 bg-black" : "border-border/50",
+                    className
+                )}
+                whileHover={{ scale: 1.02 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                {...props}
+            >
+                {/* Decorative Elements */}
+                <div className={cn(
+                    "absolute -right-10 -top-10 h-40 w-40 rounded-full blur-3xl opacity-20",
+                    variant === "neon" ? "bg-cyan-500" : "bg-primary"
+                )} />
+                <div className={cn(
+                    "absolute -left-10 -bottom-10 h-40 w-40 rounded-full blur-3xl opacity-20",
+                    variant === "neon" ? "bg-purple-500" : "bg-secondary"
+                )} />
+
+                <div className="relative z-10 flex flex-col items-center text-center space-y-6">
+                    <div className={cn(
+                        "p-3 rounded-full border",
+                        variant === "neon" ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-400" : "bg-primary/10 text-primary border-primary/20"
+                    )}>
+                        <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M12 14l9-5-9-5-9 5 9 5z" />
+                            <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                        </svg>
+                    </div>
+
+                    <div className="space-y-1">
+                        <h2 className={cn("text-xs font-bold uppercase tracking-[0.2em] opacity-60", variant === "neon" && "text-cyan-400")}>
+                            {title}
+                        </h2>
+                        <h3 className="text-2xl font-bold tracking-tight">{courseName}</h3>
+                    </div>
+
+                    <div className="w-16 h-px bg-border/50" />
+
+                    <div className="space-y-2">
+                        <p className="text-sm opacity-60">This is to certify that</p>
+                        <p className={cn("text-xl font-serif italic font-bold", variant === "neon" && "text-cyan-50 font-sans")}>{studentName}</p>
+                        <p className="text-sm opacity-60">has successfully completed the requirements for this course.</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-12 w-full pt-4 border-t border-border/20 mt-4">
+                        <div className="text-left">
+                            <p className="text-[10px] uppercase font-bold opacity-40">Issue Date</p>
+                            <p className="text-xs font-semibold">{issueDate}</p>
+                        </div>
+                        <div className="text-right">
+                            <p className="text-[10px] uppercase font-bold opacity-40">Certificate ID</p>
+                            <p className="text-xs font-mono font-semibold tracking-tighter">{id}</p>
+                        </div>
+                    </div>
+                </div>
+            </Motion.div>
+        );
+    }
+);
+CertificateCard.displayName = "CertificateCard";
+
+// ============================================
+// STUDENT PROGRESS STATS
+// ============================================
+interface StudentProgressProps extends React.HTMLAttributes<HTMLDivElement> {
+    stats: {
+        label: string;
+        value: string | number;
+        icon: React.ReactNode;
+        trend?: string;
+    }[];
+    variant?: "default" | "neon";
+}
+
+export const StudentProgress = ({ stats, variant = "default", className, ...props }: StudentProgressProps) => {
+    return (
+        <div className={cn("grid grid-cols-2 md:grid-cols-4 gap-4", className)} {...props}>
+            {stats.map((stat, i) => (
+                <Motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.1 }}
+                    whileHover={{ scale: 1.05 }}
+                    className={cn(
+                        "p-4 rounded-xl border bg-card flex flex-col justify-between h-32",
+                        variant === "neon" ? "border-cyan-500/20 bg-black/40 shadow-[0_0_10px_rgba(6,182,212,0.1)]" : "border-border/50 shadow-sm"
+                    )}
+                >
+                    <div className="flex items-center justify-between">
+                        <div className={cn(
+                            "p-2 rounded-lg",
+                            variant === "neon" ? "bg-cyan-500/10 text-cyan-400" : "bg-primary/10 text-primary"
+                        )}>
+                            {stat.icon}
+                        </div>
+                        {stat.trend && (
+                            <span className="text-[10px] font-bold text-green-500">{stat.trend}</span>
+                        )}
+                    </div>
+                    <div>
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{stat.label}</p>
+                        <p className={cn("text-xl font-black tracking-tight", variant === "neon" && "text-cyan-50")}>{stat.value}</p>
+                    </div>
+                </Motion.div>
+            ))}
+        </div>
+    );
+};
+
+// ============================================
+// STEP PROGRESS
+// ============================================
+interface StepProgressProps extends React.HTMLAttributes<HTMLDivElement> {
+    steps: {
+        title: string;
+        description: string;
+        status: "completed" | "active" | "locked";
+    }[];
+    variant?: "default" | "neon";
+}
+
+export const StepProgress = ({ steps, variant = "default", className, ...props }: StepProgressProps) => {
+    return (
+        <div className={cn("space-y-0 relative", className)} {...props}>
+            {/* Vertical Line */}
+            <div className={cn(
+                "absolute left-[19px] top-4 bottom-4 w-px bg-border/50",
+                variant === "neon" && "bg-cyan-500/20"
+            )} />
+
+            {steps.map((step, i) => (
+                <Motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.1 }}
+                    className="relative flex gap-6 pb-10 last:pb-0 group"
+                >
+                    {/* Node */}
+                    <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center">
+                        <Motion.div
+                            className={cn(
+                                "h-4 w-4 rounded-full border-2 transition-all duration-500",
+                                step.status === "completed" && (variant === "neon" ? "bg-green-500 border-green-400 shadow-[0_0_10px_rgba(34,197,94,0.5)]" : "bg-green-500 border-green-600"),
+                                step.status === "active" && (variant === "neon" ? "bg-cyan-500 border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.8)] scale-125" : "bg-primary border-primary scale-125"),
+                                step.status === "locked" && "bg-muted border-border"
+                            )}
+                            animate={step.status === "active" ? {
+                                scale: [1.25, 1.5, 1.25],
+                            } : {}}
+                            transition={{
+                                duration: 2,
+                                repeat: Infinity,
+                                ease: "easeInOut"
+                            }}
+                        />
+                    </div>
+
+                    {/* Content */}
+                    <div className="pt-1">
+                        <h4 className={cn(
+                            "font-bold transition-colors",
+                            step.status === "active" ? (variant === "neon" ? "text-cyan-400" : "text-primary") : "text-card-foreground",
+                            step.status === "locked" && "opacity-50"
+                        )}>
+                            {step.title}
+                        </h4>
+                        <p className="text-sm text-muted-foreground mt-1 max-w-sm">
+                            {step.description}
+                        </p>
+                    </div>
+                </Motion.div>
+            ))}
+        </div>
+    );
+};

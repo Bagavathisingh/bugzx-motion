@@ -27,6 +27,8 @@ interface ComponentPlaygroundProps {
     children: React.ReactNode;
     neonMode: boolean;
     componentName?: string;
+    className?: string;
+    previewHeight?: string;
 }
 
 export const ComponentPlayground = ({
@@ -37,7 +39,9 @@ export const ComponentPlayground = ({
     onControlChange,
     children,
     neonMode,
-    componentName: explicitComponentName
+    componentName: explicitComponentName,
+    className,
+    previewHeight = "min-h-[400px]"
 }: ComponentPlaygroundProps) => {
     const [activeTab, setActiveTab] = React.useState("preview");
     const [copied, setCopied] = React.useState(false);
@@ -62,7 +66,7 @@ ${code}`;
     };
 
     return (
-        <div className="w-full space-y-6">
+        <div className={cn("w-full space-y-6", className)}>
             <div className="flex flex-col gap-2">
                 <h3 className={`text-2xl font-bold ${neonMode ? "text-cyan-400" : ""}`}>{title}</h3>
                 <p className="text-muted-foreground">{description}</p>
@@ -94,7 +98,8 @@ ${code}`;
                         <div className="flex flex-col divide-y divide-border">
                             {/* Preview Area */}
                             <div className={cn(
-                                "flex items-center justify-center min-h-[400px] relative p-12 overflow-auto",
+                                "flex items-center justify-center relative p-12 overflow-auto",
+                                previewHeight,
                                 neonMode ? "bg-black" : "bg-zinc-50/50"
                             )}>
                                 <div className={cn(

@@ -28,14 +28,20 @@ export const FloatingCard = React.forwardRef<HTMLDivElement, FloatingCardProps>(
                     "rounded-xl bg-card text-card-foreground border border-border p-6",
                     className
                 )}
-                whileHover={{
-                    y: intensities[intensity].y,
-                    boxShadow: intensities[intensity].shadow,
+                style={{
+                    transformStyle: "preserve-3d"
                 }}
-                transition={{ duration: 0.2 }}
+                whileHover={{
+                    y: (intensities[intensity] || intensities.medium).y,
+                    rotateX: 2,
+                    boxShadow: (intensities[intensity] || intensities.medium).shadow,
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 {...props}
             >
-                {children}
+                <div style={{ transform: "translateZ(20px)" }}>
+                    {children}
+                </div>
             </Motion.div>
         );
     }
@@ -73,17 +79,22 @@ export const MagneticButton = React.forwardRef<HTMLButtonElement, MagneticButton
             <Motion.button
                 ref={buttonRef}
                 className={cn(
-                    "inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+                    "relative overflow-hidden inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
                     "bg-primary text-primary-foreground hover:bg-primary/90",
                     className
                 )}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
                 animate={{ x: position.x, y: position.y }}
-                transition={{ type: "spring", stiffness: 150, damping: 15 }}
+                transition={{ duration: 0.1, ease: "cubic-bezier(0.23, 1, 0.32, 1)" }}
                 {...props}
             >
-                {children}
+                <Motion.span
+                    animate={{ x: position.x * 0.5, y: position.y * 0.5 }}
+                    className="relative z-10 block pointer-events-none select-none"
+                >
+                    {children}
+                </Motion.span>
             </Motion.button>
         );
     }
@@ -91,69 +102,56 @@ export const MagneticButton = React.forwardRef<HTMLButtonElement, MagneticButton
 MagneticButton.displayName = "MagneticButton";
 
 // ============================================
-// RIPPLE EFFECT
+// TRACING BEAM
 // ============================================
-interface RippleProps extends React.HTMLAttributes<HTMLDivElement> {
+interface TracingBeamProps extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
-    color?: string;
-    accentColor?: string;
 }
 
-export const Ripple = React.forwardRef<HTMLDivElement, RippleProps>(
-    ({ className, children, color = "rgba(255, 255, 255, 0.5)", accentColor, ...props }, ref) => {
-        const [ripples, setRipples] = React.useState<Array<{ x: number; y: number; id: number }>>([]);
+export const TracingBeam = React.forwardRef<HTMLDivElement, TracingBeamProps>(
+    ({ className, children, ...props }, ref) => {
+        const [scrollY, setScrollY] = React.useState(0);
+        const containerRef = React.useRef<HTMLDivElement>(null);
 
-        const addRipple = (e: React.MouseEvent<HTMLDivElement>) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const newRipple = { x, y, id: Date.now() };
-            setRipples([...ripples, newRipple]);
+        React.useEffect(() => {
+            const handleScroll = () => {
+                if (!containerRef.current) return;
+                const rect = containerRef.current.getBoundingClientRect();
+                const totalHeight = containerRef.current.scrollHeight;
+                const visibleHeight = window.innerHeight;
+                const progress = Math.max(0, Math.min(1, -rect.top / (totalHeight - visibleHeight)));
+                setScrollY(progress);
+            };
 
-            setTimeout(() => {
-                setRipples((prev) => prev.filter((r) => r.id !== newRipple.id));
-            }, 600);
-        };
+            window.addEventListener("scroll", handleScroll);
+            handleScroll();
+            return () => window.removeEventListener("scroll", handleScroll);
+        }, []);
 
         return (
-            <div
-                ref={ref}
-                className={cn("relative overflow-hidden", className)}
-                onClick={addRipple}
-                {...props}
-            >
-                {children}
-                {ripples.map((ripple) => (
-                    <span
-                        key={ripple.id}
-                        className="absolute rounded-full animate-ripple pointer-events-none"
-                        style={{
-                            left: ripple.x,
-                            top: ripple.y,
-                            width: 0,
-                            height: 0,
-                            backgroundColor: color,
-                            transform: "translate(-50%, -50%)",
-                        }}
+            <div ref={containerRef} className={cn("relative w-full max-w-4xl mx-auto h-full", className)} {...props}>
+                <div className="absolute -left-4 md:-left-20 top-3">
+                    <div className="h-full w-[2px] bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+                        <Motion.div
+                            className="w-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.8)]"
+                            animate={{ height: `${scrollY * 100}%` }}
+                            transition={{ duration: 0.1 }}
+                        />
+                    </div>
+                    <Motion.div
+                        className="absolute w-4 h-4 rounded-full bg-white dark:bg-zinc-950 border-2 border-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.8)] -left-[7px]"
+                        animate={{ top: `${scrollY * 98}%` }}
+                        transition={{ duration: 0.1 }}
                     />
-                ))}
-                <style>{`
-                    @keyframes ripple {
-                        to {
-                            width: 500px;
-                            height: 500px;
-                            opacity: 0;
-                        }
-                    }
-                    .animate-ripple {
-                        animation: ripple 0.6s ease-out;
-                    }
-                `}</style>
+                </div>
+                <div className="pl-10 md:pl-0">
+                    {children}
+                </div>
             </div>
         );
     }
 );
-Ripple.displayName = "Ripple";
+TracingBeam.displayName = "TracingBeam";
 
 // ============================================
 // PARALLAX CONTAINER
@@ -208,56 +206,65 @@ interface GlitchTextProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const GlitchText = React.forwardRef<HTMLDivElement, GlitchTextProps>(
     ({ className, children, variant = "default", accentColor, ...props }, ref) => {
-        const variants = {
-            default: "text-foreground",
-            neon: "text-cyan-400",
-        };
-
         return (
             <div
                 ref={ref}
-                className={cn("relative inline-block group", variants[variant], className)}
+                className={cn(
+                    "relative inline-block cursor-default select-none",
+                    variant === "neon" ? "text-cyan-400" : "text-foreground",
+                    className
+                )}
                 {...props}
             >
-                <span className="relative z-10">{children}</span>
-                <span
-                    className="absolute top-0 left-0 -z-10 opacity-0 group-hover:opacity-70 group-hover:animate-glitch-1"
-                    aria-hidden="true"
+                {/* Main Text */}
+                <span className="relative z-10 block">{children}</span>
+
+                {/* Glitch Layers - Only visible/animating on hover */}
+                <Motion.span
+                    className="absolute inset-0 z-0 opacity-0 pointer-events-none mix-blend-screen overflow-hidden"
+                    whileHover={{
+                        opacity: 0.8,
+                        x: [0, -4, 4, -2, 0],
+                        y: [0, 2, -2, 3, 0],
+                    }}
+                    transition={{ duration: 0.15, repeat: Infinity }}
+                    style={{
+                        color: "#ff00ff",
+                        clipPath: "inset(20% 0 40% 0)"
+                    }}
                 >
                     {children}
-                </span>
-                <span
-                    className="absolute top-0 left-0 -z-10 opacity-0 group-hover:opacity-70 group-hover:animate-glitch-2"
-                    aria-hidden="true"
+                </Motion.span>
+
+                <Motion.span
+                    className="absolute inset-0 z-0 opacity-0 pointer-events-none mix-blend-screen overflow-hidden"
+                    whileHover={{
+                        opacity: 0.8,
+                        x: [0, 4, -4, 2, 0],
+                        y: [0, -3, 3, -1, 0],
+                    }}
+                    transition={{ duration: 0.1, repeat: Infinity }}
+                    style={{
+                        color: "#00ffff",
+                        clipPath: "inset(50% 0 10% 0)"
+                    }}
                 >
                     {children}
-                </span>
-                <style>{`
-                    @keyframes glitch-1 {
-                        0%, 100% { transform: translate(0); }
-                        20% { transform: translate(-2px, 2px); }
-                        40% { transform: translate(-2px, -2px); }
-                        60% { transform: translate(2px, 2px); }
-                        80% { transform: translate(2px, -2px); }
-                    }
-                    @keyframes glitch-2 {
-                        0%, 100% { transform: translate(0); }
-                        20% { transform: translate(2px, -2px); }
-                        40% { transform: translate(2px, 2px); }
-                        60% { transform: translate(-2px, -2px); }
-                        80% { transform: translate(-2px, 2px); }
-                    }
-                    .animate-glitch-1 {
-                        animation: glitch-1 0.3s infinite;
-                        color: #ff00ff;
-                        mix-blend-mode: screen;
-                    }
-                    .animate-glitch-2 {
-                        animation: glitch-2 0.3s infinite;
-                        color: #00ffff;
-                        mix-blend-mode: screen;
-                    }
-                `}</style>
+                </Motion.span>
+
+                <Motion.span
+                    className="absolute inset-0 z-0 opacity-0 pointer-events-none"
+                    whileHover={{
+                        opacity: [0, 1, 0],
+                    }}
+                    transition={{ duration: 0.05, repeat: Infinity }}
+                    style={{
+                        backgroundColor: variant === "neon" ? "rgba(6, 182, 212, 0.4)" : "rgba(0,0,0,0.1)",
+                        height: "1px",
+                        top: "50%",
+                        width: "100%"
+                    }}
+                />
             </div>
         );
     }
@@ -308,10 +315,14 @@ export const TiltCard = React.forwardRef<HTMLDivElement, TiltCardProps>(
                     rotateY: tilt.y,
                 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                style={{ transformStyle: "preserve-3d" }}
+                style={{
+                    transformStyle: "preserve-3d"
+                }}
                 {...props}
             >
-                {children}
+                <div style={{ transform: "translateZ(30px)" }}>
+                    {children}
+                </div>
             </Motion.div>
         );
     }

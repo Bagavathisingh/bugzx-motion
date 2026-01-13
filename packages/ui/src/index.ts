@@ -19,3 +19,4 @@ export * from './ecommerce';
 export * from './education';
 export * from './navigation';
 export * from './radio-group';
+export * from './icons';

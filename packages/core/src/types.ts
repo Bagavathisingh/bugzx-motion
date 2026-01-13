@@ -1,11 +1,15 @@
 import { CSSProperties } from 'react';
 
-export type Target = CSSProperties & {
-  x?: number | string;
-  y?: number | string;
-  scale?: number;
-  rotate?: number;
-  opacity?: number;
+export type TargetValue = number | string | (number | string)[];
+
+export type Target = {
+  [K in keyof CSSProperties]: TargetValue;
+} & {
+  x?: TargetValue;
+  y?: TargetValue;
+  scale?: TargetValue;
+  rotate?: TargetValue;
+  opacity?: TargetValue;
 };
 
 export type Transition = {
@@ -16,6 +20,8 @@ export type Transition = {
   stiffness?: number;
   damping?: number;
   mass?: number;
+  repeat?: number | typeof Infinity;
+  repeatType?: 'loop' | 'reverse' | 'mirror';
 };
 
 export interface MotionProps {

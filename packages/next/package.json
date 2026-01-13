@@ -14,6 +14,20 @@
             "types": "./dist/index.d.ts"
         }
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/bugzx/bugzx-motion.git",
+        "directory": "packages/next"
+    },
+    "keywords": [
+        "react",
+        "nextjs",
+        "motion",
+        "ui",
+        "components",
+        "ssr"
+    ],
+    "license": "MIT",
     "scripts": {
         "build": "tsup",
         "dev": "tsup --watch"
