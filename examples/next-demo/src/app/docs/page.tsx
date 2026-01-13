@@ -1173,17 +1173,12 @@ export default function DocsPage() {
           )}
           logo={
             <div className="flex items-center gap-3 font-bold text-2xl tracking-tight">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br shadow-lg ${neonMode
-                ? 'from-cyan-500 to-blue-600 text-white shadow-cyan-500/20'
-                : 'from-slate-900 to-slate-700 text-white shadow-slate-900/20'
-                }`}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-              Bugzx
+              <img
+                src="/logo.png"
+                alt="BugzxMotion"
+                className="w-10 h-10"
+              />
+              <span className={neonMode ? "text-cyan-400" : "text-slate-900"}>BugzxMotion</span>
             </div>
           }
           items={[
