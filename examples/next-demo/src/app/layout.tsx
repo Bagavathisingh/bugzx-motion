@@ -13,19 +13,22 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://bugzx-motion.pages.dev'),
   title: "BugzxMotion | Premium UI Component Library",
   description: "A production-ready, premium UI component library with built-in motion primitives. 50+ components designed to wow users and delight developers.",
   icons: {
-    icon: '/logo.png',
-    apple: '/logo.png',
+    icon: [
+      { url: "/favicon.png", type: "image/png" },
+    ],
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
   },
   openGraph: {
     title: "BugzxMotion | Premium UI Component Library",
     description: "50+ premium React components with built-in animations",
-    images: ['/logo.png'],
+    images: ["/favicon.png"],
   },
 };
-
 import { BugzxMotionProvider } from "@bugzx-motion/next";
 
 export default function RootLayout({

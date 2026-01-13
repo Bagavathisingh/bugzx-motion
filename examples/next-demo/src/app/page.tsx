@@ -26,7 +26,7 @@ export default function LandingPage() {
             className="flex justify-center"
           >
             <Badge variant="neon" className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest">
-              v0.0.3 Now Public
+              v0.0.4 Now Public
             </Badge>
           </Motion.div>
 
