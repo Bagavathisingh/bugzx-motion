@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   Button, Card, Badge, ProductCard, PricingCard, CartItem, CategoryCard,
@@ -73,6 +73,14 @@ export default function DocsPage() {
   const [spotlightColorState, setSpotlightColorState] = useState("rgba(6, 182, 212, 0.4)");
   const [magneticStrength, setMagneticStrength] = useState(0.5);
   const [glitchVariantState, setGlitchVariantState] = useState<any>("neon");
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo(0, 0);
+    }
+  }, [activeCategory]);
 
   const renderContent = () => {
     switch (activeCategory) {
@@ -1223,7 +1231,7 @@ export default function DocsPage() {
         />
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto h-screen relative">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto h-screen relative">
           <div className="absolute inset-0 pointer-events-none opacity-[0.4] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay"></div>
 
           <header className={`sticky top-0 z-30 px-10 py-6 border-b backdrop-blur-md transition-colors duration-300 ${neonMode
