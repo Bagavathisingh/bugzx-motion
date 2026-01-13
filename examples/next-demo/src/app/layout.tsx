@@ -13,8 +13,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bugzx Motion | Premium Interaction Engine",
-  description: "A high-performance, physics-based motion library for React and Next.js.",
+  title: "BugzxMotion | Premium UI Component Library",
+  description: "A production-ready, premium UI component library with built-in motion primitives. 50+ components designed to wow users and delight developers.",
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+  },
+  openGraph: {
+    title: "BugzxMotion | Premium UI Component Library",
+    description: "50+ premium React components with built-in animations",
+    images: ['/logo.png'],
+  },
 };
 
 import { BugzxMotionProvider } from "@bugzx-motion/next";
