@@ -1,25 +1,25 @@
-# 🎨 BugzxMotion - Premium UI Component Library
+# BugzxMotion - Premium UI Component Library
 
-> **The ultimate combination of shadcn/ui's design philosophy and Framer Motion's animation power**
+> The ultimate combination of shadcn/ui's design philosophy and Framer Motion's animation power
 
 A production-ready, premium UI component library with built-in motion primitives. Every component is designed to wow users and delight developers.
 
 ---
 
-## ✨ Why BugzxMotion?
+## Why BugzxMotion?
 
-- 🎭 **50+ Premium Components** - From basic to advanced, all with motion built-in
-- 🚀 **Performance First** - Optimized animations, zero runtime overhead
-- 🎨 **Beautiful by Default** - Inspired by the best design systems (shadcn/ui, Aceternity, Magic UI)
-- 🌗 **Theme Support** - Light/Dark mode + Cyber/Neon variants
-- ♿ **Fully Accessible** - Built on Radix UI primitives
-- 📦 **Tree-shakeable** - Import only what you need
-- 🔷 **TypeScript Native** - 100% typed with intelligent autocomplete
-- 🎯 **Highly Customizable** - Every component accepts className and custom props
+- **50+ Premium Components** - From basic to advanced, all with motion built-in
+- **Performance First** - Optimized animations, zero runtime overhead
+- **Beautiful by Default** - Inspired by the best design systems (shadcn/ui, Aceternity, Magic UI)
+- **Theme Support** - Light/Dark mode + Cyber/Neon variants
+- **Fully Accessible** - Built on Radix UI primitives
+- **Tree-shakeable** - Import only what you need
+- **TypeScript Native** - 100% typed with intelligent autocomplete
+- **Highly Customizable** - Every component accepts className and custom props
 
 ---
 
-## 📦 Installation
+## Installation
 
 ```bash
 npm install @bugzx-motion/next
@@ -31,7 +31,7 @@ yarn add @bugzx-motion/next
 
 ---
 
-## 🎯 Quick Start
+## Quick Start
 
 ```tsx
 import { Button, Card, Badge, Spotlight } from '@bugzx-motion/next';
@@ -51,9 +51,9 @@ export default function App() {
 
 ---
 
-## 🎨 Component Categories
+## Component Categories
 
-### 📋 Core Components
+### Core Components
 Essential UI building blocks with motion capabilities
 
 - **Button** - 6 variants + 3 motion effects (scale, fade, pop)
@@ -66,7 +66,7 @@ Essential UI building blocks with motion capabilities
 - **Dialog** - Modal dialogs with backdrop blur
 - **Dropdown Menu** - Context menus with enter/exit animations
 
-### 🎁 Standard Components
+### Standard Components
 Common UI patterns everyone needs
 
 - **Badge** - 6 variants including neon with optional animation
@@ -77,7 +77,7 @@ Common UI patterns everyone needs
 - **Tooltip** - Hover tooltips with 4 position options
 - **Alert** - Notification boxes (success, warning, error, neon)
 
-### ✨ Premium Components
+### Premium Components
 High-end effects that make your UI stand out
 
 - **Spotlight** - Mouse-tracking radial gradient effect
@@ -86,7 +86,7 @@ High-end effects that make your UI stand out
 - **AnimatedGridPattern** - Dynamic background patterns
 - **BentoGrid & BentoCard** - Modern Apple-inspired layouts
 
-### 🚀 Advanced Components
+### Advanced Components
 Sophisticated interactions for premium experiences
 
 - **FloatingCard** - Cards that lift on hover (3 intensity levels)
@@ -98,7 +98,7 @@ Sophisticated interactions for premium experiences
 
 ---
 
-## 💎 Premium Features
+## Premium Features
 
 ### Cyber/Neon Mode
 Every component supports a futuristic neon aesthetic:
@@ -122,14 +122,14 @@ Built-in animation presets for common interactions:
 
 ### Responsive & Accessible
 All components are:
-- ✅ Fully responsive
-- ✅ Keyboard navigable
-- ✅ Screen reader friendly
-- ✅ WCAG 2.1 compliant
+- Fully responsive
+- Keyboard navigable
+- Screen reader friendly
+- WCAG 2.1 compliant
 
 ---
 
-## 🎨 Example Showcase
+## Example Showcase
 
 ### Hero Section with Spotlight
 ```tsx
@@ -194,7 +194,7 @@ All components are:
 
 ---
 
-## 🔧 Configuration
+## Configuration
 
 ### Next.js Setup
 
@@ -223,19 +223,19 @@ Full TypeScript support out of the box. All components are fully typed with prop
 
 ---
 
-## 🎯 Use Cases
+## Use Cases
 
 Perfect for:
-- 🚀 **SaaS Dashboards** - Professional, polished interfaces
-- 💼 **Marketing Sites** - Eye-catching landing pages
-- 🎮 **Web Apps** - Interactive, engaging experiences
-- 📱 **Mobile-First** - Responsive, touch-friendly components
-- 🎨 **Portfolio Sites** - Showcase your work with style
-- 🛍️ **E-commerce** - Premium product presentations
+- **SaaS Dashboards** - Professional, polished interfaces
+- **Marketing Sites** - Eye-catching landing pages
+- **Web Apps** - Interactive, engaging experiences
+- **Mobile-First** - Responsive, touch-friendly components
+- **Portfolio Sites** - Showcase your work with style
+- **E-commerce** - Premium product presentations
 
 ---
 
-## 🌟 Component Highlights
+## Component Highlights
 
 ### Most Popular
 1. **Spotlight** - The signature effect everyone loves
@@ -258,7 +258,7 @@ Perfect for:
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 ### Component API
 Each component is fully documented with:
@@ -275,19 +275,19 @@ Each component is fully documented with:
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
 ---
 
-## 📄 License
+## License
 
 MIT © BugzxMotion
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 Built with inspiration from:
 - [shadcn/ui](https://ui.shadcn.com) - Design philosophy
@@ -298,7 +298,7 @@ Built with inspiration from:
 
 ---
 
-## 🚀 Get Started
+## Get Started
 
 ```bash
 npx create-next-app my-app
@@ -312,4 +312,4 @@ Then import and use any component:
 import { Button, Spotlight, ShimmerButton } from '@bugzx-motion/next';
 ```
 
-**Ready to build something amazing?** 🎉
+Ready to build something amazing?
