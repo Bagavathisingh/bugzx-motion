@@ -11,6 +11,7 @@ import {
   Spotlight, GradientBorderCard, ShimmerButton, AnimatedGridPattern, BentoGrid, BentoCard,
   FloatingCard, MagneticButton, TracingBeam, GlitchText, TiltCard, Motion,
   ProductSearchBar, FilterSidebar, OrderButton, RadioGroup, RadioGroupItem,
+  BlueprintGrid, BlueprintCard, BlueprintButton,
   CertificateCard, StudentProgress, GlassCard, TextReveal,
   BackgroundBeams, BeamCard, StepProgress, Icon,
   cn
@@ -19,7 +20,7 @@ import {
 import { ComponentPlayground } from "@/components/Playground";
 
 // Define categories
-type Category = "overview" | "ecommerce" | "education" | "auth" | "navigation" | "premium" | "icons";
+type Category = "overview" | "ecommerce" | "education" | "auth" | "navigation" | "premium" | "blueprint" | "icons";
 
 export default function DocsPage() {
   // Playground States
@@ -73,6 +74,10 @@ export default function DocsPage() {
   const [spotlightColorState, setSpotlightColorState] = useState("rgba(6, 182, 212, 0.4)");
   const [magneticStrength, setMagneticStrength] = useState(0.5);
   const [glitchVariantState, setGlitchVariantState] = useState<any>("neon");
+
+  // Blueprint States
+  const [blueprintNeon, setBlueprintNeon] = useState(true);
+  const [blueprintIndex, setBlueprintIndex] = useState(1);
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -1163,6 +1168,87 @@ export default function DocsPage() {
           </div>
         );
 
+      case "blueprint":
+        return (
+          <div className="space-y-12">
+            <div className="space-y-4">
+              <h2 className="text-3xl font-bold tracking-tight">Blueprint Grid (Portfolio UI)</h2>
+              <p className="text-zinc-400 max-w-3xl">
+                A specialized design system inspired by architectural blueprints. Features high-contrast borders, 50px grid alignment, and neon accents. Perfect for developer portfolios and technical dashboards.
+              </p>
+            </div>
+
+            <ComponentPlayground
+              title="Blueprint Components"
+              description="Interactive preview of the blueprint layout system."
+              code={`<BlueprintGrid className="h-[600px] rounded-2xl border border-zinc-800">
+  <div className="p-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+    <BlueprintCard 
+      title="Architecture" 
+      index={1} 
+      neon={${blueprintNeon}}
+    >
+      Designing scalable systems with precision and detail.
+    </BlueprintCard>
+    
+    <BlueprintCard 
+      title="Development" 
+      index={2} 
+      neon={${blueprintNeon}}
+    >
+      Building high-performance interfaces with modern stacks.
+    </BlueprintCard>
+
+    <div className="md:col-span-2 flex justify-center gap-4 pt-8">
+      <BlueprintButton variant="default">Documentation</BlueprintButton>
+      <BlueprintButton variant="neon">Get Started</BlueprintButton>
+      <BlueprintButton variant="outline">Learn More</BlueprintButton>
+    </div>
+  </div>
+</BlueprintGrid>`}
+              controls={[
+                { name: "Neon Mode", type: "boolean", value: blueprintNeon },
+                { name: "Card Index", type: "number", value: blueprintIndex, min: 1, max: 99 }
+              ]}
+              onControlChange={(name, val) => {
+                if (name === "Neon Mode") setBlueprintNeon(val);
+                if (name === "Card Index") setBlueprintIndex(val);
+              }}
+              neonMode={neonMode}
+            >
+              <div className="w-full">
+                <BlueprintGrid className="h-[500px] rounded-2xl border border-zinc-800 w-full">
+                  <div className="p-10 grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                    <BlueprintCard
+                      title="Architecture"
+                      index={blueprintIndex}
+                      neon={blueprintNeon}
+                      className="w-full"
+                    >
+                      Designing scalable systems with precision and detail.
+                    </BlueprintCard>
+
+                    <BlueprintCard
+                      title="Development"
+                      index={blueprintIndex + 1}
+                      neon={blueprintNeon}
+                      className="w-full"
+                    >
+                      Building high-performance interfaces with modern stacks.
+                    </BlueprintCard>
+
+                    <div className="md:col-span-2 flex flex-wrap justify-center gap-4 pt-6">
+                      <BlueprintButton variant="default">Documentation</BlueprintButton>
+                      <BlueprintButton variant="neon">Get Started</BlueprintButton>
+                      <BlueprintButton variant="outline">Learn More</BlueprintButton>
+                    </div>
+                  </div>
+                </BlueprintGrid>
+              </div>
+            </ComponentPlayground>
+          </div>
+        );
+
       default:
         return <div>Select a category</div>;
     }
@@ -1209,10 +1295,16 @@ export default function DocsPage() {
               onClick: () => setActiveCategory("ecommerce")
             },
             {
-              label: "Education",
-              icon: <Icon name="book" size={18} />,
+              label: "Education UI",
+              icon: <Icon name="education" size={18} />,
               active: activeCategory === "education",
               onClick: () => setActiveCategory("education")
+            },
+            {
+              label: "Blueprint (Portfolio)",
+              icon: <Icon name="blueprint" size={18} />,
+              active: activeCategory === "blueprint",
+              onClick: () => setActiveCategory("blueprint")
             },
             {
               label: "Premium Effects",

@@ -18,6 +18,7 @@ export type IconName =
     | "clock"
     | "trophy"
     | "user"
+    | "blueprint"
     | "info";
 
 interface IconProps extends React.SVGProps<SVGSVGElement> {
@@ -120,6 +121,13 @@ const glyphs: Record<IconName, () => React.JSX.Element> = {
             <circle cx="12" cy="12" r="10" />
             <path d="M12 16v-4" />
             <path d="M12 8h.01" />
+        </>
+    ),
+    blueprint: () => (
+        <>
+            <rect width="18" height="18" x="3" y="3" rx="2" />
+            <path d="M3 12h18" />
+            <path d="M12 3v18" />
         </>
     ),
 };
