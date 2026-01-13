@@ -11,7 +11,7 @@ import {
   Spotlight, GradientBorderCard, ShimmerButton, AnimatedGridPattern, BentoGrid, BentoCard,
   FloatingCard, MagneticButton, TracingBeam, GlitchText, TiltCard, Motion,
   ProductSearchBar, FilterSidebar, OrderButton, RadioGroup, RadioGroupItem,
-  BlueprintGrid, BlueprintCard, BlueprintButton,
+  BlueprintGrid, BlueprintCard, BlueprintButton, BlueprintMarquee, BlueprintProjectCard, BlueprintFooter, BlueprintContact,
   CertificateCard, StudentProgress, GlassCard, TextReveal,
   BackgroundBeams, BeamCard, StepProgress, Icon,
   cn
@@ -1244,6 +1244,61 @@ export default function DocsPage() {
                     </div>
                   </div>
                 </BlueprintGrid>
+              </div>
+            </ComponentPlayground>
+
+            <ComponentPlayground
+              title="Tactical Marquee"
+              description="Infinite technical scanline for active data or tech stacks."
+              neonMode={neonMode}
+              code={`<BlueprintMarquee \n  items={["React", "TypeScript", "Framer Motion", "Tailwind"]} \n  speed="normal" \n/>`}
+            >
+              <div className="w-full">
+                <BlueprintMarquee items={["PHYSICS_ENGINE", "MOTION_PRIMITIVES", "VIRTUAL_DOM", "GPU_ACCELERATION", "SPRING_MECHANICS"]} />
+              </div>
+            </ComponentPlayground>
+
+            <ComponentPlayground
+              title="Project Showcase"
+              description="Technical display for project logs with architectural tags."
+              neonMode={neonMode}
+              code={`<BlueprintProjectCard \n  title="Motion Engine" \n  description="Advanced physics simulation for web." \n  tags={["Core", "GL"]} \n  neon={true} \n/>`}
+            >
+              <div className="w-full max-w-sm">
+                <BlueprintProjectCard
+                  title="Aether Interface"
+                  description="A high-performance dashboard conceptualized for architectural visualization and real-time data monitoring. Features GPU-accelerated pathfinding."
+                  tags={["Rust", "WASM", "WebGL"]}
+                  neon={blueprintNeon}
+                />
+              </div>
+            </ComponentPlayground>
+
+            <ComponentPlayground
+              title="Initialization Protocol"
+              description="Technical contact module with verified signal transmission."
+              neonMode={neonMode}
+              code={`<BlueprintContact title="Contact Protocol" />`}
+            >
+              <div className="w-full">
+                <BlueprintContact />
+              </div>
+            </ComponentPlayground>
+
+            <ComponentPlayground
+              title="System Footer"
+              description="Architectural footer with technical data and system status."
+              neonMode={neonMode}
+              code={`<BlueprintFooter copyright="BugzxMotion" links={[{label: "Home", href: "/"}]} />`}
+            >
+              <div className="w-full">
+                <BlueprintFooter
+                  links={[
+                    { label: "Documentation", href: "#" },
+                    { label: "Components", href: "#" },
+                    { label: "GitHub", href: "#" }
+                  ]}
+                />
               </div>
             </ComponentPlayground>
           </div>
