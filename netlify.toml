@@ -9,7 +9,3 @@
   # Core versions
   NODE_VERSION = "20"
   PNPM_VERSION = "9.0.0"
-
-[[plugins]]
-  # Helps Netlify handle pnpm workspace caching correctly
-  package = "@netlify/plugin-pnpm"
