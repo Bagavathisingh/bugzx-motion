@@ -1,7 +1,7 @@
 [build]
   # Build from the root to handle workspace dependencies
-  # We build with turbo but filter for just the next-demo app
-  command = "pnpm install && pnpm turbo run build --filter=next-demo"
+  # Added --no-frozen-lockfile to avoid errors when specifiers are updated
+  command = "pnpm install --no-frozen-lockfile && pnpm turbo run build --filter=next-demo"
   # The output folder of the next-demo app (assuming 'output: export' in next.config.ts)
   publish = "examples/next-demo/out"
 
