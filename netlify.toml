@@ -1,0 +1,15 @@
+[build]
+  # Build from the root to handle workspace dependencies
+  # We build with turbo but filter for just the next-demo app
+  command = "pnpm install && pnpm turbo run build --filter=next-demo"
+  # The output folder of the next-demo app (assuming 'output: export' in next.config.ts)
+  publish = "examples/next-demo/out"
+
+[build.environment]
+  # Core versions
+  NODE_VERSION = "20"
+  PNPM_VERSION = "9.0.0"
+
+[[plugins]]
+  # Helps Netlify handle pnpm workspace caching correctly
+  package = "@netlify/plugin-pnpm"
